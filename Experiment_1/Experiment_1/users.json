@@ -82,5 +82,19 @@
         "id": 12,
         "password": "4",
         "username": "4"
+    },
+    {
+        "accountType": 1,
+        "balance": 0.0,
+        "id": 13,
+        "password": "5",
+        "username": "5"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 14,
+        "password": "6",
+        "username": "6"
     }
 ]

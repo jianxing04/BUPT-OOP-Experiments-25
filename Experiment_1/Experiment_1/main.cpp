@@ -308,6 +308,7 @@ int main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 	prepare p;
+	p.loadJsonFiles(usersFilePath, merchandisesFilePath);
 	int choice;
 	cout << "请选择操作：输入 1 是登录，输入 2 查看商品信息: ";
 	cin >> choice;
