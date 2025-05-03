@@ -4,17 +4,44 @@
         "description": "very good 好",
         "id": 1,
         "name": "Effective C++",
-        "ownerid": 1,
+        "ownerid": 4,
         "price": 50.0,
-        "stock": 8
+        "stock": 0
     },
     {
         "category": "book",
         "description": "马到成功！ 懂？",
-        "id": 3,
+        "id": 2,
         "name": "成功学",
         "ownerid": 3,
         "price": 100.0,
-        "stock": 6
+        "stock": 100
+    },
+    {
+        "category": "book",
+        "description": "学习计网",
+        "id": 3,
+        "name": "计算机网络",
+        "ownerid": 3,
+        "price": 90.0,
+        "stock": 100
+    },
+    {
+        "category": "book",
+        "description": "学计组",
+        "id": 4,
+        "name": "计算机组成原理",
+        "ownerid": 3,
+        "price": 90.0,
+        "stock": 11
+    },
+    {
+        "category": "book",
+        "description": "ACM",
+        "id": 6,
+        "name": "数据结构",
+        "ownerid": 3,
+        "price": 20.0,
+        "stock": 200
     }
 ]

@@ -1,7 +1,7 @@
 [
     {
         "accounttype": 1,
-        "balance": 1100.5,
+        "balance": 1350.5,
         "id": 1,
         "orders": [],
         "password": "88888888",
@@ -10,7 +10,7 @@
     },
     {
         "accounttype": 1,
-        "balance": 912.0,
+        "balance": 1112.0,
         "id": 2,
         "orders": [],
         "password": "1",
@@ -18,7 +18,7 @@
             {
                 "id": 1,
                 "name": "Effective C++",
-                "ownerid": 1,
+                "ownerid": 4,
                 "price": 50.0
             }
         ],
@@ -26,7 +26,7 @@
     },
     {
         "accounttype": 2,
-        "balance": 1010.5,
+        "balance": 1510.5,
         "id": 3,
         "orders": [],
         "password": "1",
@@ -35,7 +35,7 @@
     },
     {
         "accounttype": 2,
-        "balance": 0.0,
+        "balance": 50.0,
         "id": 4,
         "orders": [],
         "password": "2",

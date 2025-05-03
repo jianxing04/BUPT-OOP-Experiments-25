@@ -22,5 +22,6 @@
   <ItemGroup>
     <None Include="users.json" />
     <None Include="merchandises.json" />
+    <None Include="merchandiseID.json" />
   </ItemGroup>
 </Project>

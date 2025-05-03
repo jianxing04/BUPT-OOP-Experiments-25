@@ -6,9 +6,11 @@ using namespace std;
 using json = nlohmann::json;
 const string usersFilePath = "users.json";
 const string merchandisesFilePath = "merchandises.json";
+const string merchandiseIDFilePath = "merchandiseID.json";
 json allUsers;
 json allMerchandises;
 json currentUser;
+json merchandiseID;
 class basicOperations {
 public:
 	void loadUsers()const {
@@ -30,6 +32,14 @@ public:
 		else {
 			cout << "Unable to open merchandises file." << endl;
 		}
+		ifstream file2(merchandiseIDFilePath);
+		if (file2.is_open()) {
+			file2 >> merchandiseID;
+			file2.close();
+		}
+		else {
+			cout << "Unable to open merchandise ID file." << endl;
+		}
 	}
 	void saveUsers()const {
 		ofstream file(usersFilePath);
@@ -49,6 +59,14 @@ public:
 		}
 		else {
 			cout << "Unable to open merchandises file." << endl;
+		}
+		ofstream file2(merchandiseIDFilePath);
+		if (file2.is_open()) {
+			file2 << merchandiseID.dump(4);
+			file2.close();
+		}
+		else {
+			cout << "Unable to open merchandise ID file." << endl;
 		}
 	}
 	void safeReadString(string& str)const {
@@ -126,7 +144,7 @@ public:
 	void viewMerchandise()const {
 		cout << "商品列表:\n";
 		for (const auto& merchandise : allMerchandises) {
-			cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] << "\n";
+			cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] << "，商品描述：" << merchandise["description"] << "\n";
 		}
 	}
 };
@@ -156,7 +174,7 @@ public:
 	void viewMerchandise()const {
 		cout << "商品列表:\n";
 		for (const auto& merchandise : allMerchandises) {
-			cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] << "\n";
+			cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] <<"，商品描述：" <<merchandise["description"] << "\n";
 		}
 	}
 	void blanceInquiry()const {
@@ -291,6 +309,7 @@ public:
 		}
 	}
 	void generateOrder()const {
+		denyMyOrders();
 		cout << "您的购物车清单如下：\n";
 		viewMyShoppingTrolley();
 		double totalPrice = 0.0;
@@ -376,9 +395,18 @@ public:
 			}
 		}
 	}
-	void clearMyOrders()const {
+	void denyMyOrders()const {
 		for (auto& user : allUsers) {
 			if (user["id"] == id) {//找到当前用户
+				for (auto& order : user["orders"]) {//遍历订单
+					for (auto& merchandise : allMerchandises) {//遍历商品
+						if (merchandise["id"] == order["id"]) {//找到商品
+							merchandise["stock"] = merchandise["stock"].get<int>() + order["quantity"].get<int>();
+							bo.saveMerchandises();
+							break;
+						}
+					}
+				}
 				user["orders"].clear();
 				bo.saveUsers();
 				cout << "订单已清空！\n";
@@ -389,12 +417,12 @@ public:
 	void interaction() const override {
 		int choice;
 		while (1) {
-			cout << "\n******************************************************************************************\n";
+			cout << "\n*******************************************************************************************************\n";
 			cout << "欢迎使用购物系统！\n";
 			cout << "0. 查看用户类型   1. 修改密码   2. 查看所有商品   3. 查询余额   4. 充值\n";
 			cout << "5. 搜索商品   6.查看我的购物车   7.向我的购物车添加商品   8.从我的购物车删除一件商品   9.清空我的购物车\n";
-			cout << "10.根据购物车生成订单   11.查看我的订单   12.支付订单   13.清空订单   其他.退出";
-			cout << "\n******************************************************************************************\n";
+			cout << "10.根据购物车生成订单   11.查看我的订单   12.支付订单   13.取消订单   其他.退出";
+			cout << "\n*******************************************************************************************************\n";
 			cout << "请输入你的选择：";
 			cin >> choice;
 			switch (choice) {
@@ -411,7 +439,7 @@ public:
 			case 10: generateOrder(); break;
 			case 11: viewMyOrders(); break;
 			case 12: payForTheOrder(); break;
-			case 13: clearMyOrders(); break;
+			case 13: denyMyOrders(); break;
 			default: return; //退出
 			}
 		}
@@ -449,7 +477,8 @@ public:
 		newMerchandise["name"] = name;
 		newMerchandise["price"] = price;
 		newMerchandise["stock"] = stock;
-		newMerchandise["id"] = allMerchandises.size() + 1;
+		newMerchandise["id"] = merchandiseID["total"].get<int>() + 1;
+		merchandiseID["total"] = merchandiseID["total"].get<int>() + 1;
 		newMerchandise["ownerid"] = id;
 		newMerchandise["description"] = description;
 		newMerchandise["category"] = category;

@@ -134,6 +134,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="merchandiseID.json" />
     <None Include="merchandises.json" />
     <None Include="users.json" />
   </ItemGroup>
