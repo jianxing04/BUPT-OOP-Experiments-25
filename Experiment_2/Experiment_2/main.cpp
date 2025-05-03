@@ -590,6 +590,27 @@ public:
 		}
 	}
 };
+class merchandiseBase {
+public:
+	merchandiseBase(int ID) : id(ID) {}
+	virtual void getPrice() const = 0;
+	int id;
+	double price, discount;
+};
+class book : public merchandiseBase {
+public:
+	book(int ID) : merchandiseBase(ID) {}
+	void getPrice() const override {
+		cout << "书籍价格: " << price * discount << "\n";
+	}
+};
+class clothes : public merchandiseBase {
+public:
+	clothes(int ID) : merchandiseBase(ID) {}
+	void getPrice() const override {
+		cout << "衣服价格: " << price * discount << "\n";
+	}
+};
 int main(){
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
