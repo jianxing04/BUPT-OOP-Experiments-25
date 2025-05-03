@@ -1,0 +1,20 @@
+[
+    {
+        "category": "book",
+        "description": "very good 好",
+        "id": 1,
+        "name": "Effective C++",
+        "ownerid": 1,
+        "price": 50.0,
+        "stock": 8
+    },
+    {
+        "category": "book",
+        "description": "马到成功！ 懂？",
+        "id": 3,
+        "name": "成功学",
+        "ownerid": 3,
+        "price": 100.0,
+        "stock": 6
+    }
+]

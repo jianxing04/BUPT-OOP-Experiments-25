@@ -1,0 +1,63 @@
+[
+    {
+        "accounttype": 1,
+        "balance": 1100.5,
+        "id": 1,
+        "orders": [],
+        "password": "88888888",
+        "shoppingtrolley": [],
+        "username": "God"
+    },
+    {
+        "accounttype": 1,
+        "balance": 912.0,
+        "id": 2,
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [
+            {
+                "id": 1,
+                "name": "Effective C++",
+                "ownerid": 1,
+                "price": 50.0
+            }
+        ],
+        "username": "1"
+    },
+    {
+        "accounttype": 2,
+        "balance": 1010.5,
+        "id": 3,
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "马云"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0.0,
+        "id": 4,
+        "orders": [],
+        "password": "2",
+        "shoppingtrolley": [],
+        "username": "2"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0.0,
+        "id": 5,
+        "orders": [],
+        "password": "3",
+        "shoppingtrolley": [],
+        "username": "3"
+    },
+    {
+        "accounttype": 1,
+        "balance": 0.0,
+        "id": 6,
+        "orders": [],
+        "password": "4",
+        "shoppingtrolley": [],
+        "username": "4"
+    }
+]
