@@ -1,6 +1,7 @@
 ﻿#include<iostream>
 #include<fstream>
 #include<nlohmann/json.hpp>
+#define NOMINMAX
 #include<Windows.h>
 using namespace std;
 using json = nlohmann::json;
@@ -70,9 +71,12 @@ public:
 		}
 	}
 	void safeReadString(string& str)const {
-		getline(cin, str);
-		while (str.empty()) {
+		while (true) {
 			getline(cin, str);
+			if (!str.empty()) {
+				break;
+			}
+			cout << "输入不能为空，请重新输入：";
 		}
 	}
 	void registerAccount() {
@@ -99,7 +103,15 @@ public:
 		cout << "请输入密码：";
 		safeReadString(password);
 		cout << "输入账户类型：1-消费者，2-商家：";
-		cin >> accountType;
+		while (true) {
+			if (cin >> accountType && (accountType ==1 || accountType==2)) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
 		json newUser;
 		newUser["accounttype"] = accountType;
 		newUser["balance"] = 0.0;
@@ -188,7 +200,15 @@ public:
 	void recharge()const {
 		double amount;
 		cout << "请输入充值金额: ";
-		cin >> amount;
+		while (true) {
+			if (cin >> amount&&amount>=0) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
 		for (auto& user : allUsers) {
 			if (user["id"] == id) {
 				user["balance"] = user["balance"].get<double>() + amount;
@@ -326,16 +346,28 @@ public:
 					cout << "名称: " << item["name"] << ", 价格: " << item["price"] << "\n";
 					cout << "对于上面这个商品，请输入购买数量：";
 					int quantity;
-					cin >> quantity;
-					while (totalPrice + quantity * item["price"].get<double>() > balance) {//判断余额是否足够
-						cout << "余额不足！请重新输入购买数量：\n";
-						cin >> quantity;
-					}
 					for (auto& merchandise : allMerchandises) {
 						if (merchandise["id"] == item["id"]) {
-							while (merchandise["stock"].get<int>() < quantity) {//判断库存是否足够
-								cout << "库存不足！请重新输入购买数量：\n";
-								cin >> quantity;
+							while (true) {
+								if (cin >> quantity&&quantity>=0) {
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+									break;
+								}
+								cin.clear(); // 清除错误状态
+								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+								cout << "输入无效，请输入一个整数：";
+							}
+							while ((merchandise["stock"].get<int>() < quantity)|| (totalPrice + quantity * item["price"].get<double>() > balance)) {//判断库存是否足够
+								cout << "库存不足！库存仅有："<<merchandise["stock"] << "，或者购买太多余额不足，请重新输入购买数量：\n";
+								while (true) {
+									if (cin >> quantity && quantity >= 0) {
+										cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+										break;
+									}
+									cin.clear(); // 清除错误状态
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+									cout << "输入无效，请输入一个整数：";
+								}
 							}
 							merchandise["stock"] = merchandise["stock"].get<int>() - quantity;
 							bo.saveMerchandises();
@@ -401,7 +433,7 @@ public:
 				for (auto& order : user["orders"]) {//遍历订单
 					for (auto& merchandise : allMerchandises) {//遍历商品
 						if (merchandise["id"] == order["id"]) {//找到商品
-							merchandise["stock"] = merchandise["stock"].get<int>() + order["quantity"].get<int>();
+							merchandise["stock"] = merchandise["stock"].get<int>() + order["quantity"].get<int>();//补货
 							bo.saveMerchandises();
 							break;
 						}
@@ -424,7 +456,15 @@ public:
 			cout << "10.根据购物车生成订单   11.查看我的订单   12.支付订单   13.取消订单   其他.退出";
 			cout << "\n*******************************************************************************************************\n";
 			cout << "请输入你的选择：";
-			cin >> choice;
+			while (true) {
+				if (cin >> choice) {
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					break;
+				}
+				cin.clear(); // 清除错误状态
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				cout << "输入无效，请输入一个整数：";
+			}
 			switch (choice) {
 			case 0: getUserType(); break; //查看用户类型
 			case 1: changePassword(); break;
@@ -458,16 +498,24 @@ public:
 		cout << "请输入商品名称: ";
 		bo.safeReadString(name);
 		cout << "请输入商品价格: ";
-		cin >> price;
-		while (price < 0) {
-			cout << "价格不能为负数，请重新输入: ";
-			cin >> price;
+		while (true) {
+			if (cin >> price && price >= 0) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
 		}
 		cout << "请输入商品库存: ";
-		cin >> stock;
-		while (stock < 0) {
-			cout << "库存不能为负数，请重新输入: ";
-			cin >> stock;
+		while (true) {
+			if (cin >> stock && stock >= 0) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
 		}
 		cout << "请输入商品描述: ";
 		bo.safeReadString(description);
@@ -515,10 +563,14 @@ public:
 		for (auto& merchandise : allMerchandises) {
 			if (merchandise["name"] == name && merchandise["ownerid"] == id) {
 				cout << "请输入新的价格: ";
-				cin >> newPrice;
-				while (newPrice < 0) {
-					cout << "价格不能为负数，请重新输入: ";
-					cin >> newPrice;
+				while (true) {
+					if (cin >> newPrice && newPrice >= 0) {
+						cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+						break;
+					}
+					cin.clear(); // 清除错误状态
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					cout << "输入无效，请输入一个整数：";
 				}
 				merchandise["price"] = newPrice;
 				bo.saveMerchandises();
@@ -540,10 +592,14 @@ public:
 		for (auto& merchandise : allMerchandises) {
 			if (merchandise["name"] == name && merchandise["ownerid"] == id) {
 				cout << "请输入补货数量: ";
-				cin >> stock;
-				while (stock < 0) {
-					cout << "补货数量不能为负数，请重新输入: ";
-					cin >> stock;
+				while (true) {
+					if (cin >> stock && stock >= 0) {
+						cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+						break;
+					}
+					cin.clear(); // 清除错误状态
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					cout << "输入无效，请输入一个整数：";
 				}
 				merchandise["stock"] = merchandise["stock"].get<int>() + stock;
 				bo.saveMerchandises();
@@ -562,10 +618,14 @@ public:
 		cout << "请输入商品分类: ";
 		bo.safeReadString(category);
 		cout << "请输入折扣率（0-1之间）: ";
-		cin >> discount;
-		while (discount < 0 || discount>1) {
-			cout << "折扣率不合法，请重新输入（0-1之间）: ";
-			cin >> discount;
+		while (true) {
+			if (cin >> discount && discount >= 0&&discount<=1) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
 		}
 		int flg = 0;
 		for (auto& merchandise : allMerchandises) {
@@ -600,7 +660,15 @@ public:
 			cout << "10.根据商品类别打折   11.查看我的商品   其他.退出";
 			cout << "\n**********************************************************************\n";
 			cout << "请输入你的选择：";
-			cin >> choice;
+			while (true) {
+				if (cin >> choice) {
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					break;
+				}
+				cin.clear(); // 清除错误状态
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				cout << "输入无效，请输入一个整数：";
+			}
 			switch (choice) {
 			case 0: getUserType(); break; //查看用户类型
 			case 1: changePassword(); break;
@@ -652,7 +720,15 @@ int main(){
 		cout << "欢迎使用购物系统！   1. 注册账号   2. 登陆账号   3. 查看所有商品   其他. 退出";
 		cout << "\n*****************************************************************************\n";
 		cout << "请输入你的选择：";
-		cin >> choice;
+		while (true) {
+			if (cin >> choice) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
 		if (choice == 1) {
 			bo.registerAccount();
 		}

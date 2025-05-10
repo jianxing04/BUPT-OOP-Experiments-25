@@ -15,7 +15,7 @@
         "name": "成功学",
         "ownerid": 3,
         "price": 100.0,
-        "stock": 100
+        "stock": 90
     },
     {
         "category": "book",
@@ -42,6 +42,15 @@
         "name": "数据结构",
         "ownerid": 3,
         "price": 20.0,
+        "stock": 200
+    },
+    {
+        "category": "game",
+        "description": "666 666",
+        "id": 7,
+        "name": "王者荣耀",
+        "ownerid": 3,
+        "price": 100.0,
         "stock": 200
     }
 ]
