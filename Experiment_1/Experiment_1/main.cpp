@@ -2,6 +2,7 @@
 #include<fstream>
 #include<string>
 #include<nlohmann/json.hpp>
+#define NOMINMAX
 #include<Windows.h>
 #include"UserLogin.h"
 using json = nlohmann::json;
@@ -50,26 +51,23 @@ class userBase {
 public:
 	userBase(int ID) : id(ID) {}
 	virtual void getUserType() const = 0;
-	void changePassword()const {
+	void changePassword() const {
 		string newPassword;
-		int flg = 0;
 		cout << "请输入新密码: ";
-		getline(cin,newPassword);
-		while (newPassword.empty()) {
+		while (true) {
 			getline(cin, newPassword);
+			if (!newPassword.empty()) break;
+			cout << "密码不能为空，请重新输入: ";
 		}
 		for (auto& user : users) {
 			if (user["id"] == id) {
 				user["password"] = newPassword;
-				p.saveJsonFiles(usersFilePath,users);
+				p.saveJsonFiles(usersFilePath, users);
 				cout << "密码修改成功！\n";
-				flg = 1;
-				break;
+				return;
 			}
 		}
-		if (!flg) {
-			cout << "密码修改失败！\n";
-		}
+		cout << "密码修改失败！\n";
 	}
 	void viewMerchandise()const {
 		cout << "商品列表:\n";
@@ -88,7 +86,18 @@ public:
 	void recharge()const {
 		double amount;
 		cout << "请输入充值金额: ";
-		cin >> amount;
+		while (true) {
+			cin >> amount;
+			if (cin.fail() || amount <= 0) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "充值金额无效，请重新输入: ";
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				break;
+			}
+		}
 		for (auto& user : users) {
 			if (user["id"] == id) {
 				user["balance"] = user["balance"].get<double>() + amount;
@@ -101,9 +110,10 @@ public:
 	void searchForMerchandise()const {
 		string merchandiseName;
 		cout << "请输入要搜索的商品名称: ";
-		getline(cin,merchandiseName);
-		while (merchandiseName.empty()) {
+		while (true) {
 			getline(cin, merchandiseName);
+			if (!merchandiseName.empty()) break;
+			cout << "商品名称不能为空，请重新输入: ";
 		}
 		cout << "搜索结果如下\n";
 		bool flg = 0;
@@ -129,9 +139,10 @@ public:
 	void purchase()const {
 		string merchandiseName;
 		cout << "请输入要购买的商品名称: ";
-		getline(cin,merchandiseName);
-		while (merchandiseName.empty()) {
+		while (true) {
 			getline(cin, merchandiseName);
+			if (!merchandiseName.empty()) break;
+			cout << "商品名称不能为空，请重新输入: ";
 		}
 		for (auto& merchandise : merchandises) {
 			if (merchandise["name"] == merchandiseName) {
@@ -174,23 +185,48 @@ public:
 		double price;
 		int stock;
 		cout << "请输入商品名称: ";
-		getline(cin,name);
-		while (name.empty()) {
+		while (true) {
 			getline(cin, name);
+			if (!name.empty()) break;
+			cout << "商品名称不能为空，请重新输入: ";
 		}
 		cout << "请输入商品价格: ";
-		cin >> price;
+		while (true) {
+			cin >> price;
+			if (cin.fail() || price <= 0) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "商品价格无效，请重新输入: ";
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				break;
+			}
+		}
 		cout << "请输入商品库存: ";
-		cin >> stock;
+		while (true) {
+			cin >> stock;
+			if (cin.fail() || stock < 0) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "商品库存无效，请重新输入: ";
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				break;
+			}
+		}
 		cout << "请输入商品描述: ";
-		getline(cin,description);
-		while (description.empty()) {
+		while (true) {
 			getline(cin, description);
+			if (!description.empty()) break;
+			cout << "商品描述不能为空，请重新输入: ";
 		}
 		cout << "请输入商品分类: ";
-		getline(cin,category);
-		while (category.empty()) {
+		while (true) {
 			getline(cin, category);
+			if (!category.empty()) break;
+			cout << "商品分类不能为空，请重新输入: ";
 		}
 		json newMerchandise;
 		newMerchandise["id"] = merchandises.size() + 1;
@@ -208,12 +244,24 @@ public:
 		string name;
 		double newPrice;
 		cout << "请输入要修改价格的商品名称: ";
-		getline(cin,name);
-		while (name.empty()) {
+		while (true) {
 			getline(cin, name);
+			if (!name.empty()) break;
+			cout << "商品名称不能为空，请重新输入: ";
 		}
 		cout << "请输入新的价格: ";
-		cin >> newPrice;
+		while (true) {
+			cin >> newPrice;
+			if (cin.fail() || newPrice <= 0) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "价格无效，请重新输入: ";
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				break;
+			}
+		}
 		int flg = 0;
 		for (auto& merchandise : merchandises) {
 			if (merchandise["name"] == name && merchandise["ownerId"] == id) {
@@ -232,15 +280,23 @@ public:
 		string category;
 		double discount;
 		cout << "请输入商品分类: ";
-		getline(cin,category);
-		while (category.empty()) {
+		while (true) {
 			getline(cin, category);
+			if (!category.empty()) break;
+			cout << "商品分类不能为空，请重新输入: ";
 		}
 		cout << "请输入折扣率（0-1之间）: ";
-		cin >> discount;
-		while (discount < 0 || discount>1) {
-			cout << "折扣率不合法，请重新输入（0-1之间）: ";
+		while (true) {
 			cin >> discount;
+			if (cin.fail() || discount < 0 || discount > 1) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "折扣率无效，请重新输入（0-1之间）: ";
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				break;
+			}
 		}
 		int flg = 0;
 		for (auto& merchandise : merchandises) {
@@ -261,12 +317,24 @@ public:
 		string name;
 		int stock;
 		cout << "请输入要补货的商品名称: ";
-		getline(cin,name);
-		while (name.empty()) {
+		while (true) {
 			getline(cin, name);
+			if (!name.empty()) break;
+			cout << "商品名称不能为空，请重新输入: ";
 		}
 		cout << "请输入补货数量: ";
-		cin >> stock;
+		while (true) {
+			cin >> stock;
+			if (cin.fail() || stock <= 0) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "补货数量无效，请重新输入: ";
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				break;
+			}
+		}
 		int flg = 0;
 		for (auto& merchandise : merchandises) {
 			if (merchandise["name"] == name && merchandise["ownerId"] == id) {
@@ -311,11 +379,33 @@ int main() {
 	p.loadJsonFiles(usersFilePath, merchandisesFilePath);
 	int choice;
 	cout << "请选择操作：输入 1 是登录，输入 2 查看商品信息: ";
-	cin >> choice;
+	while (true) {
+		cin >> choice;
+		if (cin.fail() || (choice != 1 && choice != 2)) {
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "输入无效，请重新输入: ";
+		}
+		else {
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清除换行符
+			break;
+		}
+	}
 	while (choice == 2) {
 		p.viewMerchandise();
 		cout << "请选择操作：输入 1 是登录，输入 2 查看商品信息: ";
-		cin >> choice;
+		while (true) {
+			cin >> choice;
+			if (cin.fail() || (choice != 1 && choice != 2)) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "输入无效，请重新输入: ";
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清除换行符
+				break;
+			}
+		}
 	}
 	UserLogin userLogin("users.json");
 	json user=userLogin.mainMenu();
@@ -324,7 +414,18 @@ int main() {
 		customer c(user["id"]);
 		while (1) {
 			cout << "输入 1 是查看用户类型，输入 2 是修改密码，输入 3 是余额查询，输入 4 是充值，输入 5 是购买商品，输入 6 是搜索商品，输入 7 是查看所有商品,输入其他数字退出: ";
-			cin >> choice;
+			while (true) {
+				cin >> choice;
+				if (cin.fail()) {
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cout << "输入无效，请重新输入: ";
+				}
+				else {
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清除换行符
+					break;
+				}
+			}
 			if (choice == 1) {
 				c.getUserType();
 			}
@@ -355,7 +456,18 @@ int main() {
 		merchant m(user["id"]);
 		while (1) {
 			cout << "输入 1 是查看用户类型，输入 2 是修改密码，输入 3 是余额查询，输入 4 是充值，输入 5 是添加商品，输入 6 是修改商品价格，输入 7 是设置折扣，输入 8 是补货，输入9是查看所有商品，输入其他数字退出: ";
-			cin >> choice;
+			while (true) {
+				cin >> choice;
+				if (cin.fail()) {
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cout << "输入无效，请重新输入: ";
+				}
+				else {
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清除换行符
+					break;
+				}
+			}
 			if (choice == 1) {
 				m.getUserType();
 			}

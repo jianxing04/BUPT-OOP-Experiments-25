@@ -33,7 +33,7 @@
         "name": "Cap",
         "ownerId": 1,
         "price": 15.99,
-        "stock": 75
+        "stock": 74
     },
     {
         "category": "book",
@@ -52,5 +52,14 @@
         "ownerId": 12,
         "price": 50.0,
         "stock": 10
+    },
+    {
+        "category": "book",
+        "description": "很好！  666 nice",
+        "id": 7,
+        "name": "成功学",
+        "ownerId": 16,
+        "price": 89.10000000000001,
+        "stock": 200
     }
 ]

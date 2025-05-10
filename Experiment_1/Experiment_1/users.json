@@ -50,7 +50,7 @@
     },
     {
         "accountType": 1,
-        "balance": 101.01,
+        "balance": 129.01999999999998,
         "id": 8,
         "password": "1",
         "username": "1"
@@ -96,5 +96,19 @@
         "id": 14,
         "password": "6",
         "username": "6"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 15,
+        "password": "1",
+        "username": " "
+    },
+    {
+        "accountType": 2,
+        "balance": 1000.0,
+        "id": 16,
+        "password": "1",
+        "username": "刘强东"
     }
 ]
