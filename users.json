@@ -1,0 +1,83 @@
+[
+    {
+        "accounttype": 1,
+        "balance": 1350.5,
+        "id": 1,
+        "orders": [],
+        "password": "88888888",
+        "shoppingtrolley": [],
+        "username": "God"
+    },
+    {
+        "accounttype": 1,
+        "balance": 312.0,
+        "id": 2,
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "1"
+    },
+    {
+        "accounttype": 2,
+        "balance": 3210.5,
+        "id": 3,
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "马云"
+    },
+    {
+        "accounttype": 2,
+        "balance": 50.0,
+        "id": 4,
+        "orders": [],
+        "password": "2",
+        "shoppingtrolley": [],
+        "username": "2"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0.0,
+        "id": 5,
+        "orders": [],
+        "password": "3",
+        "shoppingtrolley": [],
+        "username": "3"
+    },
+    {
+        "accounttype": 1,
+        "balance": 0.0,
+        "id": 6,
+        "orders": [],
+        "password": "4",
+        "shoppingtrolley": [],
+        "username": "4"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0.0,
+        "id": 7,
+        "orders": [],
+        "password": "666666",
+        "shoppingtrolley": [],
+        "username": "马化腾"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0,
+        "id": 8,
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "张一鸣"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0,
+        "id": 9,
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "李嘉诚"
+    }
+]

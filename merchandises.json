@@ -1,0 +1,92 @@
+[
+    {
+        "category": "book",
+        "description": "very good 好",
+        "id": 1,
+        "name": "Effective C++",
+        "ownerid": 4,
+        "price": 50.0,
+        "stock": 0
+    },
+    {
+        "category": "book",
+        "description": "马到成功！ 懂？",
+        "id": 2,
+        "name": "成功学",
+        "ownerid": 3,
+        "price": 90.0,
+        "stock": 90
+    },
+    {
+        "category": "book",
+        "description": "学习计网",
+        "id": 3,
+        "name": "计算机网络",
+        "ownerid": 3,
+        "price": 81.0,
+        "stock": 98
+    },
+    {
+        "category": "book",
+        "description": "学计组",
+        "id": 4,
+        "name": "计算机组成原理",
+        "ownerid": 3,
+        "price": 81.0,
+        "stock": 11
+    },
+    {
+        "category": "book",
+        "description": "马到成功！ 懂？",
+        "id": 5,
+        "name": "成功学",
+        "ownerid": 7,
+        "price": 100.0,
+        "stock": 100
+    },
+    {
+        "category": "book",
+        "description": "ACM",
+        "id": 6,
+        "name": "数据结构",
+        "ownerid": 3,
+        "price": 18.0,
+        "stock": 199
+    },
+    {
+        "category": "book",
+        "description": "666",
+        "id": 8,
+        "name": "阿里巴巴",
+        "ownerid": 3,
+        "price": 45.0,
+        "stock": 766
+    },
+    {
+        "category": "game",
+        "description": "666 好好玩",
+        "id": 9,
+        "name": "王者荣耀",
+        "ownerid": 3,
+        "price": 88.0,
+        "stock": 100
+    },
+    {
+        "category": "car",
+        "description": "车车",
+        "id": 10,
+        "name": "迈巴赫",
+        "ownerid": 4,
+        "price": 4500000.0,
+        "stock": 2
+    },
+    {
+        "category": "home",
+        "description": "牛，666",
+        "id": 11,
+        "name": "长江实业",
+        "ownerid": 9,
+        "price": 10000000.0,
+        "stock": 100
+    }
+]
