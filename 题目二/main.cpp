@@ -1,0 +1,838 @@
+﻿#include<iostream>
+#include<fstream>
+#include<nlohmann/json.hpp>
+#define NOMINMAX
+#include<Windows.h>
+using namespace std;
+using json = nlohmann::json;
+const string usersFilePath = "users.json";
+const string merchandisesFilePath = "merchandises.json";
+const string merchandiseIDFilePath = "merchandiseID.json";
+json allUsers;
+json allMerchandises;
+json currentUser;
+json merchandiseID;
+class basicOperations {
+public:
+	void loadUsers()const {
+		ifstream file(usersFilePath);
+		if (file.is_open()) {
+			file >> allUsers;
+			file.close();
+		}
+		else {
+			cout << "Unable to open users file." << endl;
+		}
+	}
+	void loadMerchandises()const {
+		ifstream file(merchandisesFilePath);
+		if (file.is_open()) {
+			file >> allMerchandises;
+			file.close();
+		}
+		else {
+			cout << "Unable to open merchandises file." << endl;
+		}
+		ifstream file2(merchandiseIDFilePath);
+		if (file2.is_open()) {
+			file2 >> merchandiseID;
+			file2.close();
+		}
+		else {
+			cout << "Unable to open merchandise ID file." << endl;
+		}
+	}
+	void saveUsers()const {
+		ofstream file(usersFilePath);
+		if (file.is_open()) {
+			file << allUsers.dump(4);
+			file.close();
+		}
+		else {
+			cout << "Unable to open users file." << endl;
+		}
+	}
+	void saveMerchandises()const {
+		ofstream file(merchandisesFilePath);
+		if (file.is_open()) {
+			file << allMerchandises.dump(4);
+			file.close();
+		}
+		else {
+			cout << "Unable to open merchandises file." << endl;
+		}
+		ofstream file2(merchandiseIDFilePath);
+		if (file2.is_open()) {
+			file2 << merchandiseID.dump(4);
+			file2.close();
+		}
+		else {
+			cout << "Unable to open merchandise ID file." << endl;
+		}
+	}
+	void safeReadString(string& str)const {
+		while (true) {
+			getline(cin, str);
+			if (!str.empty()) {
+				break;
+			}
+			cout << "输入不能为空，请重新输入：";
+		}
+	}
+	void registerAccount() {
+		string userName, password;
+		int accountType;
+		cout << "请输入用户名：";
+		safeReadString(userName);
+		while (1) {
+			int flg = 0;
+			for (const auto& user : allUsers) {
+				if (user["username"] == userName) {
+					flg = 1;
+					break;
+				}
+			}
+			if (flg) {
+				cout << "该用户名已存在！请重新输入：";
+				safeReadString(userName);
+			}
+			else {
+				break;
+			}
+		}
+		cout << "请输入密码：";
+		safeReadString(password);
+		cout << "输入账户类型：1-消费者，2-商家：";
+		while (true) {
+			if (cin >> accountType && (accountType ==1 || accountType==2)) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
+		json newUser;
+		newUser["accounttype"] = accountType;
+		newUser["balance"] = 0.0;
+		newUser["id"] = allUsers.size() + 1;
+		newUser["message"] = json::array();
+		newUser["orders"] = json::array();
+		newUser["password"] = password;
+		newUser["shoppingtrolley"] = json::array();
+		newUser["username"] = userName;
+		allUsers.push_back(newUser);
+		cout << "账号注册成功！\n";
+		saveUsers();
+	}
+	void loginAccount()const {
+		string userName, userPassword;
+		cout << "输入账号名：";
+		safeReadString(userName);
+		while (1) {
+			int flg = 0;
+			for (const auto& user : allUsers) {//遍历所有用户
+				if (user["username"] == userName) {//找到匹配的用户名
+					flg = 1;
+					cout << "请输入密码：";
+					safeReadString(userPassword);
+					while (userPassword != user["password"]) {
+						cout << "密码不正确！请重新输入：";
+						safeReadString(userPassword);
+					}
+					currentUser = user;
+					cout << "登陆成功！\n";
+					break;
+				}
+			}
+			if (flg) {
+				break;
+			}
+			else {
+				cout << "该账号不存在！请重新输入：";
+				safeReadString(userName);
+			}
+		}
+	}
+	void viewMerchandise()const {
+		cout << "商品列表:\n";
+		for (const auto& merchandise : allMerchandises) {
+			cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] << "，商品描述：" << merchandise["description"] << "\n";
+		}
+	}
+};
+class userBase {
+public:
+	userBase(int ID) : id(ID) {}
+	virtual void getUserType() const = 0;
+	virtual void interaction() const = 0;
+	void changePassword()const {
+		string newPassword;
+		int flg = 0;
+		cout << "请输入新密码: ";
+		bo.safeReadString(newPassword);
+		for (auto& user : allUsers) {
+			if (user["id"] == id) {
+				user["password"] = newPassword;
+				bo.saveUsers();
+				cout << "密码修改成功！\n";
+				flg = 1;
+				break;
+			}
+		}
+		if (!flg) {
+			cout << "密码修改失败！\n";
+		}
+	}
+	void viewMerchandise()const {
+		cout << "商品列表:\n";
+		for (const auto& merchandise : allMerchandises) {
+			cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] <<"，商品描述：" <<merchandise["description"] << "\n";
+		}
+	}
+	void blanceInquiry()const {
+		for (const auto& user : allUsers) {
+			if (user["id"] == id) {
+				cout << "当前余额: " << user["balance"] << "\n";
+				break;
+			}
+		}
+	}
+	void recharge()const {
+		double amount;
+		cout << "请输入充值金额: ";
+		while (true) {
+			if (cin >> amount&&amount>=0) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
+		for (auto& user : allUsers) {
+			if (user["id"] == id) {
+				user["balance"] = user["balance"].get<double>() + amount;
+				bo.saveUsers();
+				cout << "充值成功！当前余额: " << user["balance"] << "\n";
+				break;
+			}
+		}
+	}
+	void searchForMerchandise()const {
+		string merchandiseName;
+		cout << "请输入要搜索的商品名称: ";
+		bo.safeReadString(merchandiseName);
+		cout << "搜索结果如下\n";
+		bool flg = 0;
+		for (const auto& merchandise : allMerchandises) {
+			if (merchandise["name"] == merchandiseName) {
+				flg = 1;
+				cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] << "\n";
+			}
+		}
+		if (!flg) {
+			cout << "此商品不存在!\n";
+		}
+	}
+	int id;
+	basicOperations bo;
+};
+class consumer : public userBase {
+public:
+	consumer(int ID) : userBase(ID) {}
+	void getUserType() const override {
+		cout << "用户类型: 消费者\n";
+	}
+	void viewMyShoppingTrolley()const {
+		cout << "购物车商品列表:\n";
+		for (const auto& user : allUsers) {
+			if (user["id"] == id) {
+				for (const auto& item : user["shoppingtrolley"]) {
+					cout << "名称: " << item["name"] << ", 价格: " << item["price"] << "\n";
+				}
+				break;
+			}
+		}
+	}
+	void addToShoppingTrolley()const {
+		string merchandiseName;
+		int flg = 0;
+		cout << "请输入要添加到购物车的商品名称: ";
+		bo.safeReadString(merchandiseName);
+		for (const auto& user : allUsers) {
+			if (user["id"] == id) {
+				for (const auto& item : user["shoppingtrolley"]) {
+					if (item["name"] == merchandiseName) {
+						cout << "购物车中已存在此商品！\n";
+						return;
+					}
+				}
+				break;
+			}
+		}
+		for (const auto& merchandise : allMerchandises) {
+			if (merchandise["name"] == merchandiseName) {
+				flg = 1;
+				cout << "商品信息如下：\n";
+				cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] << "\n";
+				for (auto& user : allUsers) {
+					if (user["id"] == id) {
+						json merchandiseCopy;
+						merchandiseCopy["name"] = merchandise["name"];
+						merchandiseCopy["price"] = merchandise["price"];
+						merchandiseCopy["id"] = merchandise["id"];
+						merchandiseCopy["ownerid"] = merchandise["ownerid"];
+						user["shoppingtrolley"].push_back(merchandiseCopy);
+						bo.saveUsers();
+						cout << "商品已添加到购物车！\n";
+						break;
+					}
+				}
+				break;
+			}
+		}
+		if (!flg) {
+			cout << "此商品不存在!\n";
+		}
+	}
+	void removeFromShoppingTrolley()const {
+		string merchandiseName;
+		int flg = 0;
+		cout << "请输入要从购物车中移除的商品名称: ";
+		bo.safeReadString(merchandiseName);
+		for (auto& user : allUsers) {
+			if (user["id"] == id) {
+				for (auto it = user["shoppingtrolley"].begin(); it != user["shoppingtrolley"].end(); ++it) {
+					if ((*it)["name"] == merchandiseName) {
+						user["shoppingtrolley"].erase(it);
+						bo.saveUsers();
+						cout << "商品已从购物车中移除！\n";
+						flg = 1;
+						break;
+					}
+				}
+				break;
+			}
+		}
+		if (!flg) {
+			cout << "此商品不在购物车中!\n";
+		}
+	}
+	void clearShoppingTrolley()const {
+		for (auto& user : allUsers) {
+			if (user["id"] == id) {
+				user["shoppingtrolley"].clear();
+				bo.saveUsers();
+				cout << "购物车已清空！\n";
+				break;
+			}
+		}
+	}
+	void generateOrder()const {
+		//denyMyOrders();
+		cout << "您的购物车清单如下：\n";
+		viewMyShoppingTrolley();
+		double totalPrice = 0.0;
+		for (auto& user : allUsers) {
+			if (user["id"] == id) {//找到当前用户
+				json newOrder;
+				double balance = user["balance"].get<double>();
+				for (const auto& item : user["shoppingtrolley"]) {//遍历购物车
+					json order;
+					order["name"] = item["name"];
+					order["price"] = item["price"];
+					order["id"] = item["id"];
+					order["ownerid"] = item["ownerid"];
+					cout << "名称: " << item["name"] << ", 价格: " << item["price"] << "\n";
+					int quantity = 0;
+					int flg = 0;
+					for (auto& merchandise : allMerchandises) {
+						if (merchandise["id"] == item["id"]) {
+							flg = 1;//找到商品
+							cout << "对于上面这个商品，请输入购买数量：";
+							while (true) {
+								if (cin >> quantity&&quantity>=0) {
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+									break;
+								}
+								cin.clear(); // 清除错误状态
+								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+								cout << "输入无效，请输入一个整数：";
+							}
+							while ((merchandise["stock"].get<int>() < quantity)
+								|| (totalPrice + quantity * item["price"].get<double>() > balance)) {//判断库存是否足够
+								cout << "库存不足！库存仅有："<<merchandise["stock"] 
+									<< "，或者购买太多余额不足，请重新输入购买数量：\n";
+								while (true) {
+									if (cin >> quantity && quantity >= 0) {
+										cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+										break;
+									}
+									cin.clear(); // 清除错误状态
+									cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+									cout << "输入无效，请输入一个整数：";
+								}
+							}
+							merchandise["stock"] = merchandise["stock"].get<int>() - quantity;
+							bo.saveMerchandises();
+							break;
+						}
+					}
+					if (!flg) {
+						cout << "该商品已经被商家下架！\n";
+						continue;
+					}
+					totalPrice += quantity * item["price"].get<double>();
+					order["quantity"] = quantity;
+					if (quantity > 0) {//如果购买数量大于0，则添加到订单
+						newOrder["items"].push_back(order);
+						cout << "已添加到订单：名称: " << order["name"] 
+							<< ", 价格: " << order["price"] << ", 数量: " 
+							<< order["quantity"] << "\n";
+					}
+				}
+				if (newOrder["items"].size() > 0) {//如果订单不为空
+					user["orders"].push_back(newOrder);
+					cout << "订单生成成功！一共 " << totalPrice << " 元\n";
+					bo.saveUsers();
+				}
+				else {
+					cout << "没有选择商品，无法生成订单！\n";
+				}
+				break;
+			}
+		}
+	};
+	void viewMyOrders()const {
+		double totalPrice = 0.0;
+		int cnt = 0;
+		cout << "您的订单清单如下：\n";
+		for (const auto& user : allUsers) {
+			if (user["id"] == id) {//找到当前用户
+				for (const auto& order : user["orders"]) {
+					cnt++;
+					cout << "订单 " << cnt << ":\n";
+					for(const auto& item : order["items"]) {//遍历订单中的商品
+						totalPrice += item["price"].get<double>() * item["quantity"].get<int>();
+						cout << "名称: " << item["name"] << ", 价格: " << item["price"] << ", 数量: " << item["quantity"] << "\n";
+					}
+				}
+				cout << "总金额: " << totalPrice << "\n";
+				break;
+			}
+		}
+	}
+	void payForTheOrder()const {
+		double totalPrice = 0.0;
+		int cnt = 0;
+		for (auto& user : allUsers) {
+			if (user["id"] == id) {//找到当前用户
+				for (auto it = user["orders"].begin(); it != user["orders"].end();) {//遍历订单
+					cnt++;
+					cout << "对于订单" << cnt << "，是否支付？(y/n): ";
+					char choice;
+					while (true) {
+						cin >> choice;
+						cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+						if (choice == 'y' || choice == 'n') {
+							break;
+						}
+						cout << "输入无效，请输入'y'或'n': ";
+					}
+					if (choice == 'n') {
+						cout << "订单未支付！\n";
+						it++; // 继续下一个订单
+						continue;
+					}
+					for (const auto& order : (*it)["items"]) {//遍历订单中的商品
+						totalPrice += order["price"].get<double>() * order["quantity"].get<int>();
+						for (auto& merchant : allUsers) {//遍历商家
+							if (merchant["id"] == order["ownerid"]) {//找到商家
+								merchant["balance"] = merchant["balance"].get<double>() 
+									+ order["price"].get<double>() * order["quantity"].get<int>();
+								string message = "您收到订单：" + order["name"].get<string>() 
+									+ "，商品id：" + to_string(order["id"].get<int>()) 
+									+ "，一共" + to_string(order["quantity"].get<int>()) + "件";
+								merchant["message"].push_back(message);
+								break;
+							}
+						}
+					}
+					it = user["orders"].erase(it);  // erase() 返回指向下一个元素的迭代器
+				}
+				if (totalPrice > 0) {
+					user["balance"] = user["balance"].get<double>() - totalPrice;
+					//user["orders"].clear();
+					bo.saveUsers();
+					cout << "支付成功！当前余额: " << user["balance"] << "\n";
+				}
+				else {
+					cout << "没有订单需要支付！\n";
+				}
+				break;
+			}
+		}
+	}
+	void denyMyOrders()const {
+		int cnt = 0;
+		for (auto& user : allUsers) {
+			if (user["id"] == id) {//找到当前用户
+				if (user["orders"].empty()) {
+					cout << "您没有订单！\n";
+					return;
+				}
+				for (auto it = user["orders"].begin(); it != user["orders"].end();) {//遍历订单
+					cnt++;
+					cout << "对于订单" << cnt << "，是否取消？(y/n): ";
+					char choice;
+					while (true) {
+						cin >> choice;
+						cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+						if (choice == 'y' || choice == 'n') {
+							break;
+						}
+						cout << "输入无效，请输入'y'或'n': ";
+					}
+					if (choice == 'n') {
+						cout << "订单未取消！\n";
+						it++; // 继续下一个订单
+						continue;
+					}
+					for (auto& order : (*it)["items"]) {//遍历订单中的商品
+						for (auto& merchandise : allMerchandises) {//遍历商品
+							if (merchandise["id"] == order["id"]) {//找到商品
+								merchandise["stock"] = merchandise["stock"].get<int>() + order["quantity"].get<int>();//补货
+								bo.saveMerchandises();
+								break;
+							}
+						}
+					}
+					it = user["orders"].erase(it);  // erase() 返回指向下一个元素的迭代器
+				}
+				bo.saveUsers();
+				break;
+			}
+		}
+	}
+	void interaction() const override {
+		int choice;
+		while (1) {
+			cout << "\n*******************************************************************************************************\n";
+			cout << "欢迎使用购物系统！\n";
+			cout << "0. 查看用户类型   1. 修改密码   2. 查看所有商品   3. 查询余额   4. 充值\n";
+			cout << "5. 搜索商品   6.查看我的购物车   7.向我的购物车添加商品   8.从我的购物车删除一件商品   9.清空我的购物车\n";
+			cout << "10.根据购物车生成订单   11.查看我的订单   12.支付订单   13.取消订单   其他.退出";
+			cout << "\n*******************************************************************************************************\n";
+			cout << "请输入你的选择：";
+			while (true) {
+				if (cin >> choice) {
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					break;
+				}
+				cin.clear(); // 清除错误状态
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				cout << "输入无效，请输入一个整数：";
+			}
+			switch (choice) {
+			case 0: getUserType(); break; //查看用户类型
+			case 1: changePassword(); break;
+			case 2: viewMerchandise(); break;
+			case 3: blanceInquiry(); break;
+			case 4: recharge(); break;
+			case 5: searchForMerchandise(); break;
+			case 6: viewMyShoppingTrolley(); break;
+			case 7: addToShoppingTrolley(); break;
+			case 8: removeFromShoppingTrolley(); break;
+			case 9: clearShoppingTrolley(); break;
+			case 10: generateOrder(); break;
+			case 11: viewMyOrders(); break;
+			case 12: payForTheOrder(); break;
+			case 13: denyMyOrders(); break;
+			default: return; //退出
+			}
+		}
+	}
+};
+class merchant : public userBase {
+public:
+	merchant(int ID) : userBase(ID) {}
+	void getUserType() const override {
+		cout << "用户类型: 商家\n";
+	}
+	void addMerchandise()const {
+		string name,description,category;
+		double price;
+		int stock;
+		cout << "请输入商品名称: ";
+		bo.safeReadString(name);
+		cout << "请输入商品价格: ";
+		while (true) {
+			if (cin >> price && price >= 0) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
+		cout << "请输入商品库存: ";
+		while (true) {
+			if (cin >> stock && stock >= 0) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
+		cout << "请输入商品描述: ";
+		bo.safeReadString(description);
+		cout << "请输入商品分类: ";
+		bo.safeReadString(category);
+		json newMerchandise;
+		newMerchandise["name"] = name;
+		newMerchandise["price"] = price;
+		newMerchandise["stock"] = stock;
+		newMerchandise["id"] = merchandiseID["total"].get<int>() + 1;
+		merchandiseID["total"] = merchandiseID["total"].get<int>() + 1;
+		newMerchandise["ownerid"] = id;
+		newMerchandise["description"] = description;
+		newMerchandise["category"] = category;
+		allMerchandises.push_back(newMerchandise);
+		bo.saveMerchandises();
+		cout << "商品添加成功！\n";
+	}
+	void removeMerchandise()const {
+		string merchandiseName;
+		int flg = 0;
+		cout << "请输入要删除的商品名称: ";
+		bo.safeReadString(merchandiseName);
+		for (auto it = allMerchandises.begin(); it != allMerchandises.end(); ++it) {
+			if ((*it)["name"] == merchandiseName && (*it)["ownerid"] == id) {
+				allMerchandises.erase(it);
+				flg = 1;
+				break;
+			}
+		}
+		if (flg) {
+			cout << "商品已删除！\n";
+			bo.saveMerchandises();
+		}
+		else {
+			cout << "此商品不存在或不是您的商品！\n";
+		}
+	}
+	void modifyMerchandisePrice()const {
+		string name;
+		double newPrice;
+		cout << "请输入要修改价格的商品名称: ";
+		bo.safeReadString(name);
+		int flg = 0;
+		for (auto& merchandise : allMerchandises) {
+			if (merchandise["name"] == name && merchandise["ownerid"] == id) {
+				cout << "请输入新的价格: ";
+				while (true) {
+					if (cin >> newPrice && newPrice >= 0) {
+						cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+						break;
+					}
+					cin.clear(); // 清除错误状态
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					cout << "输入无效，请输入一个整数：";
+				}
+				merchandise["price"] = newPrice;
+				bo.saveMerchandises();
+				cout << "价格修改成功！\n";
+				flg = 1;
+				break;
+			}
+		}
+		if (!flg) {
+			cout << "商品不存在或您没有权限修改此商品的价格！\n";
+		}
+	}
+	void stockpile()const {
+		string name;
+		int stock;
+		cout << "请输入要补货的商品名称: ";
+		bo.safeReadString(name);
+		int flg = 0;
+		for (auto& merchandise : allMerchandises) {
+			if (merchandise["name"] == name && merchandise["ownerid"] == id) {
+				cout << "请输入补货数量: ";
+				while (true) {
+					if (cin >> stock && stock >= 0) {
+						cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+						break;
+					}
+					cin.clear(); // 清除错误状态
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					cout << "输入无效，请输入一个整数：";
+				}
+				merchandise["stock"] = merchandise["stock"].get<int>() + stock;
+				bo.saveMerchandises();
+				cout << "补货成功！当前库存: " << merchandise["stock"] << "\n";
+				flg = 1;
+				break;
+			}
+		}
+		if (!flg) {
+			cout << "商品不存在或您没有权限补货！\n";
+		}
+	}
+	void discountByCategory()const {
+		string category;
+		double discount;
+		cout << "请输入商品分类: ";
+		bo.safeReadString(category);
+		cout << "请输入折扣率（0-1之间）: ";
+		while (true) {
+			if (cin >> discount && discount >= 0&&discount<=1) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
+		int flg = 0;
+		for (auto& merchandise : allMerchandises) {
+			if (merchandise["category"] == category && merchandise["ownerid"] == id) {
+				merchandise["price"] = merchandise["price"].get<double>() * discount;
+				flg = 1;
+			}
+		}
+		if (!flg) {
+			cout << "没有找到符合条件的商品！\n";
+		}
+		else {
+			cout << "折扣成功！\n";
+			bo.saveMerchandises();
+		}
+	}
+	void viewMyMerchandise()const {
+		cout << "我的商品列表:\n";
+		for (const auto& merchandise : allMerchandises) {
+			if (merchandise["ownerid"] == id) {
+				cout << "名称: " << merchandise["name"] << ", 价格: " << merchandise["price"] << "，余量：" << merchandise["stock"] << "\n";
+			}
+		}
+	}
+	void viewMyMessage()const {
+		for (const auto& user : allUsers) {//遍历所有用户
+			if (user["id"] == id) {//找到当前用户
+				for (const auto& message : user["message"]) {//遍历消息
+					cout << message << "\n";//输出消息
+				}
+			}
+		}
+	}
+	void interaction() const override {
+		int choice;
+		while (1) {
+			cout << "\n**********************************************************************\n";
+			cout << "欢迎使用购物系统！\n";
+			cout << "0. 查看用户类型   1. 修改密码   2. 查看所有商品   3. 查询余额   4. 充值\n";
+			cout << "5. 搜索商品   6.添加商品   7.删除商品   8.修改产品价格   9.增加产品库存\n";
+			cout << "10.根据商品类别打折   11.查看我的商品   12.查看消息   其他.退出";
+			cout << "\n**********************************************************************\n";
+			cout << "请输入你的选择：";
+			while (true) {
+				if (cin >> choice) {
+					cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+					break;
+				}
+				cin.clear(); // 清除错误状态
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				cout << "输入无效，请输入一个整数：";
+			}
+			switch (choice) {
+			case 0: getUserType(); break; //查看用户类型
+			case 1: changePassword(); break;
+			case 2: viewMerchandise(); break;
+			case 3: blanceInquiry(); break;
+			case 4: recharge(); break;
+			case 5: searchForMerchandise(); break;
+			case 6: addMerchandise(); break;
+			case 7: removeMerchandise(); break;
+			case 8: modifyMerchandisePrice(); break;
+			case 9: stockpile(); break;
+			case 10: discountByCategory(); break;
+			case 11: viewMyMerchandise(); break;
+			case 12:viewMyMessage(); break;
+			default: return; //退出
+			}
+		}
+	}
+};
+class merchandiseBase {
+public:
+	merchandiseBase(int ID) : id(ID) {}
+	virtual void getPrice() const = 0;
+	int id;
+	double price, discount;
+};
+class book : public merchandiseBase {
+public:
+	book(int ID) : merchandiseBase(ID) {}
+	void getPrice() const override {
+		cout << "书籍价格: " << price * discount << "\n";
+	}
+};
+class clothes : public merchandiseBase {
+public:
+	clothes(int ID) : merchandiseBase(ID) {}
+	void getPrice() const override {
+		cout << "衣服价格: " << price * discount << "\n";
+	}
+};
+int main(){
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP(CP_UTF8);
+	basicOperations bo;
+	bo.loadUsers();
+	bo.loadMerchandises();
+	int choice;
+	while (1) {
+		cout << "\n*****************************************************************************\n";
+		cout << "欢迎使用购物系统！   1. 注册账号   2. 登陆账号   3. 查看所有商品   其他. 退出";
+		cout << "\n*****************************************************************************\n";
+		cout << "请输入你的选择：";
+		while (true) {
+			if (cin >> choice) {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+				break;
+			}
+			cin.clear(); // 清除错误状态
+			cin.ignore(numeric_limits<streamsize>::max(), '\n'); // 清理缓冲区
+			cout << "输入无效，请输入一个整数：";
+		}
+		if (choice == 1) {
+			bo.registerAccount();
+		}
+		else if (choice == 2) {
+			bo.loginAccount();
+			int userType = currentUser["accounttype"];
+			int userID = currentUser["id"];
+			if (userType == 1) {
+				consumer c(userID);
+				c.interaction();
+			}
+			else {
+				merchant m(userID);
+				m.interaction();
+			}
+		}
+		else if (choice == 3) {
+			bo.viewMerchandise();
+		}
+		else {
+			cout << "感谢使用购物系统！\n";
+			break;
+		}
+	}
+	bo.saveUsers();
+	bo.saveMerchandises();
+	return 0;
+}

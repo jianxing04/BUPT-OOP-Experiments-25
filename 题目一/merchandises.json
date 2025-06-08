@@ -1,0 +1,74 @@
+[
+    {
+        "category": "clothing",
+        "description": "A comfortable cotton t-shirt.",
+        "id": 1,
+        "name": "T-shirt",
+        "ownerId": 1,
+        "price": 19.99,
+        "stock": 100
+    },
+    {
+        "category": "kitchenware",
+        "description": "A ceramic mug for your favorite beverage.",
+        "id": 2,
+        "name": "Mug",
+        "ownerId": 1,
+        "price": 9.99,
+        "stock": 49
+    },
+    {
+        "category": "stationery",
+        "description": "A spiral-bound notebook for your notes.",
+        "id": 3,
+        "name": "Notebook",
+        "ownerId": 1,
+        "price": 5.99,
+        "stock": 200
+    },
+    {
+        "category": "accessories",
+        "description": "A stylish cap to protect you from the sun.",
+        "id": 4,
+        "name": "Cap",
+        "ownerId": 1,
+        "price": 15.99,
+        "stock": 74
+    },
+    {
+        "category": "book",
+        "description": "很好的一本书 很好 very good",
+        "id": 5,
+        "name": "C++ Primer",
+        "ownerId": 9,
+        "price": 20.0,
+        "stock": 120
+    },
+    {
+        "category": "book",
+        "description": "very good 好",
+        "id": 6,
+        "name": "Effective C++",
+        "ownerId": 12,
+        "price": 50.0,
+        "stock": 10
+    },
+    {
+        "category": "book",
+        "description": "很好！  666 nice",
+        "id": 7,
+        "name": "成功学",
+        "ownerId": 16,
+        "price": 89.10000000000001,
+        "stock": 199
+    },
+    {
+        "category": "book",
+        "description": "很好",
+        "id": 8,
+        "name": "阿里巴巴",
+        "ownerId": 9,
+        "price": 25.0,
+        "stock": 20
+    }
+]

@@ -1,0 +1,121 @@
+[
+    {
+        "accountType": 1,
+        "balance": 1000.5,
+        "id": 1,
+        "password": "88888888",
+        "username": "God"
+    },
+    {
+        "accountType": 2,
+        "balance": 5000.0,
+        "id": 2,
+        "password": "666666",
+        "username": "女娲"
+    },
+    {
+        "accountType": 1,
+        "balance": 0.0,
+        "id": 3,
+        "password": "12345678",
+        "username": "PanGu"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 4,
+        "password": "1111111111",
+        "username": "1111111111"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 5,
+        "password": "1234567890",
+        "username": "小明"
+    },
+    {
+        "accountType": 1,
+        "balance": 0.0,
+        "id": 6,
+        "password": "666",
+        "username": "小红"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 7,
+        "password": "666666",
+        "username": "666"
+    },
+    {
+        "accountType": 1,
+        "balance": 329.02,
+        "id": 8,
+        "password": "1",
+        "username": "1"
+    },
+    {
+        "accountType": 2,
+        "balance": 200.0,
+        "id": 9,
+        "password": "2",
+        "username": "马云"
+    },
+    {
+        "accountType": 1,
+        "balance": 0.0,
+        "id": 10,
+        "password": "2",
+        "username": "2"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 11,
+        "password": "3",
+        "username": "3"
+    },
+    {
+        "accountType": 2,
+        "balance": 101.0,
+        "id": 12,
+        "password": "4",
+        "username": "4"
+    },
+    {
+        "accountType": 1,
+        "balance": 0.0,
+        "id": 13,
+        "password": "5",
+        "username": "5"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 14,
+        "password": "6",
+        "username": "6"
+    },
+    {
+        "accountType": 2,
+        "balance": 0.0,
+        "id": 15,
+        "password": "1",
+        "username": " "
+    },
+    {
+        "accountType": 2,
+        "balance": 1000.0,
+        "id": 16,
+        "password": "1",
+        "username": "刘强东"
+    },
+    {
+        "accountType": 1,
+        "balance": 9910.9,
+        "id": 17,
+        "password": "2",
+        "username": "孙红雷"
+    }
+]

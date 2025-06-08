@@ -1,0 +1,111 @@
+[
+    {
+        "accounttype": 1,
+        "balance": 1350.5,
+        "id": 1,
+        "message": [],
+        "orders": [],
+        "password": "88888888",
+        "shoppingtrolley": [],
+        "username": "God"
+    },
+    {
+        "accounttype": 1,
+        "balance": 6912.0,
+        "id": 2,
+        "message": [],
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [
+            {
+                "category": "game",
+                "description": "很好很好",
+                "id": 8,
+                "name": "天天酷跑",
+                "ownerid": 7,
+                "price": 100.0,
+                "stock": 93
+            },
+            {
+                "category": "game",
+                "description": "666 666",
+                "id": 7,
+                "name": "王者荣耀",
+                "ownerid": 3,
+                "price": 100.0,
+                "stock": 191
+            }
+        ],
+        "username": "1"
+    },
+    {
+        "accounttype": 2,
+        "balance": 4910.5,
+        "id": 3,
+        "message": [
+            "您收到订单：王者荣耀，商品id：7，一共1件",
+            "您收到订单：成功学，商品id：2，一共1件",
+            "您收到订单：计算机网络，商品id：3，一共1件",
+            "您收到订单：王者荣耀，商品id：7，一共1件",
+            "您收到订单：王者荣耀，商品id：7，一共1件"
+        ],
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "马云"
+    },
+    {
+        "accounttype": 2,
+        "balance": 50.0,
+        "id": 4,
+        "message": [],
+        "orders": [],
+        "password": "2",
+        "shoppingtrolley": [],
+        "username": "2"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0.0,
+        "id": 5,
+        "message": [],
+        "orders": [],
+        "password": "3",
+        "shoppingtrolley": [],
+        "username": "3"
+    },
+    {
+        "accounttype": 1,
+        "balance": 0.0,
+        "id": 6,
+        "message": [],
+        "orders": [],
+        "password": "4",
+        "shoppingtrolley": [],
+        "username": "4"
+    },
+    {
+        "accounttype": 2,
+        "balance": 1100.0,
+        "id": 7,
+        "message": [
+            "您收到订单：天天酷跑，商品id：8，一共1件",
+            "您收到订单：天天酷跑，商品id：8，一共1件",
+            "您收到订单：天天酷跑，商品id：8，一共1件"
+        ],
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "马化腾"
+    },
+    {
+        "accounttype": 2,
+        "balance": 0.0,
+        "id": 8,
+        "message": [],
+        "orders": [],
+        "password": "1",
+        "shoppingtrolley": [],
+        "username": "罗永浩"
+    }
+]
